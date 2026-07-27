@@ -95,9 +95,9 @@
   @keyframes glow{0%,100%{text-shadow:0 0 10px rgba(156,175,136,.3)}50%{text-shadow:0 0 20px rgba(201,169,106,.55)}}
   .cover .eyebrow{margin-bottom:6px}
 
-  .plate{position:relative;width:320px;max-width:84vw;height:170px;margin:8px auto 6px}
+  .plate{position:relative;width:360px;max-width:90vw;height:180px;margin:8px auto 6px}
   .names{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .names .n{font-family:'Ephesis',cursive;font-size:64px;line-height:.86;
+  .names .n{font-family:'Ephesis',cursive;font-size:clamp(36px,12vw,52px);line-height:.92;white-space:nowrap;
     background:linear-gradient(100deg,var(--rose) 20%,#e6b9b2 50%,var(--rose) 80%);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
     background-size:220% 100%}
@@ -249,7 +249,7 @@
     html{scroll-behavior:auto}.node{opacity:1;translate:none;transform:none!important}.petal{display:none}
     .fill{height:100%!important}.mehndi path{stroke-dashoffset:0!important}
   }
-  @media (max-width:380px){.names .n{font-size:56px}.cd .num{font-size:32px}.cd .cell{padding:0 11px}}
+  @media (max-width:380px){.cd .num{font-size:32px}.cd .cell{padding:0 11px}}
 </style>
 </head>
 <body>
@@ -490,9 +490,9 @@
     <div class="eyebrow">With all our love</div>
     <h2>Kindly RSVP</h2>
     <p>Your presence will make our joy complete.</p>
-    <div class="contact"><span class="cn">Jaspal Singh</span><a href="tel:+919999859295">+91 99998 59295</a></div>
-    <div class="contact"><span class="cn">Ramandeep Singh</span><a href="tel:+918130309416">+91 81303 09416</a></div>
-    <div class="contact"><span class="cn">Sukhdeep Singh</span><a href="tel:+918178757465">+91 81787 57465</a></div>
+    <div class="contact"><span class="cn">Jaspal Singh</span><a href="tel:+919999999999">+91 99999 99999</a></div>
+    <div class="contact"><span class="cn">Ramandeep Singh</span><a href="tel:+919999999999">+91 99999 99999</a></div>
+    <div class="contact"><span class="cn">Sukhdeep Singh</span><a href="tel:+919999999999">+91 99999 99999</a></div>
   </section>
 
   <!-- ============ FOOTER ============ -->
@@ -575,6 +575,20 @@
     canvas.addEventListener('touchend',function(){drawing=false;});
   }
   window.addEventListener('load',setupCanvas);
+
+  /* ---- fit long names uniformly within the reveal plate ---- */
+  function fitNames(){
+    var plate=document.getElementById('plate');if(!plate)return;
+    var avail=plate.clientWidth-10;
+    var ns=plate.querySelectorAll('.names .n');if(!ns.length)return;
+    ns.forEach(function(n){n.style.fontSize='';});
+    var base=parseFloat(getComputedStyle(ns[0]).fontSize);
+    var maxW=0;ns.forEach(function(n){if(n.scrollWidth>maxW)maxW=n.scrollWidth;});
+    if(maxW>avail){var size=Math.max(20,Math.floor(base*avail/maxW));ns.forEach(function(n){n.style.fontSize=size+'px';});}
+  }
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(fitNames);}
+  window.addEventListener('load',fitNames);
+  var fitT;window.addEventListener('resize',function(){clearTimeout(fitT);fitT=setTimeout(fitNames,150);},{passive:true});
 
   /* ---- countdown ---- */
   var target=new Date('2026-09-20T11:00:00+05:30').getTime(),timer;
